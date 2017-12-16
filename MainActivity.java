@@ -34,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
         //  iv.setImageResource(R.drawable.viselogo);
 
         mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            startActivity(new Intent(MainActivity.this, HqActivity.class));
+            finish();
+        }
+
         editTextEmail = (EditText)findViewById(R.id.email_id);
         editTextPassword = (EditText) findViewById(R.id.password_id);
         buttonRegister = (Button) findViewById(R.id.register_btnid);
@@ -51,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser() != null){
                     Toast.makeText(getApplicationContext(),"Sign In Successful", Toast.LENGTH_LONG).show();
-
                     startActivity(new Intent(getApplicationContext(),HeadQuaterActivity.class));
                 }
             }
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+              //Intent myIntent = new Intent(MainActivity.this, HqActivity.class);
+               // MainActivity.this.startActivity(myIntent);
                 startSignIn();
             }
         });
@@ -69,29 +75,32 @@ public class MainActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
     private void startSignIn(){
-        String email = editTextEmail.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
+       String email = editTextEmail.getText().toString().trim();
+       String password = editTextPassword.getText().toString().trim();
         if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)){
-            Toast.makeText(getApplicationContext(),email+"Fields are Empry"+password, Toast.LENGTH_SHORT).show();
+           Toast.makeText(getApplicationContext(),email+"Fields are Empry"+password, Toast.LENGTH_SHORT).show();
         }
-        else {
+         else {
 
-            //Toast.makeText(getApplicationContext(),email+"  "+password, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),email+"  "+password, Toast.LENGTH_LONG).show();
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            Toast.makeText(getApplicationContext(),"Sign ***********", Toast.LENGTH_LONG).show();
                             if(!task.isSuccessful()){
                                 Toast.makeText(getApplicationContext(),"Sign In Problem", Toast.LENGTH_LONG).show();
-                                //startActivity(new Intent(getApplicationContext(),ServiceActivity.class));
+                               // startActivity(new Intent(getApplicationContext(),ServiceActivity.class));
                                 // Toast.makeText(getApplicationContext(), getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-                            }
+                           }
                             else {
                                 startActivity(new Intent(getApplicationContext(), HeadQuaterActivity.class));
                                 finish();
                                 Toast.makeText(getApplicationContext(), "Sign In Successful", Toast.LENGTH_LONG).show();
                             }
                         }
+
                     });
         }
     }
